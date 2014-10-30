@@ -1,13 +1,14 @@
 doctype html
 html
   head
-    title= relativePath
-    link(href="/code/local_dev_server/style.css", rel="stylesheet")
+    title= relativePath || "/"
+    link(href=cssPath, rel="stylesheet")
   body
     h1 Directory listing for<br>
-      a(href="/") home
+      a(href="/") root
       each part in pathParts
-        | /
+        // 8203 is zero-width space. Without it, the text won't wrap
+        | &thinsp;/&#8203;&thinsp;
         a(href=part.url)= part.part
 
     table.directories

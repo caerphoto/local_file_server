@@ -1,6 +1,6 @@
 //jshint node:true
 var static = require("node-static");
-var rootDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+var rootDir = "/";
 var fileServer = new static.Server(rootDir, { cache: 0 });
 var fs = require("fs");
 var url = require("url");
@@ -92,6 +92,7 @@ require("http").createServer(function (req, res) {
                     }
 
                     html = render({
+                        cssPath: path.join(__dirname, "style.css"),
                         relativePath: relativePath,
                         pathParts: pathParts,
                         directories: contents.directories,
