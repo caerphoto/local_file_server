@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    title= relativePath
+    link(href="/code/local_dev_server/style.css", rel="stylesheet")
+  body
+    h1 Directory listing for<br>
+      a(href="/") home
+      each part in pathParts
+        | /
+        a(href=part.url)= part.part
+
+    table.directories
+      thead
+        tr
+          th Name
+      tbody
+        each dir in directories
+          tr
+            td
+              a(href=relativePath + "/" + dir)= dir
+
+    table.files
+      thead
+        tr
+          th.name Name
+          th.type Type
+          th.size Size
+      tbody
+        each file in files
+          tr
+            td.name
+              a(href=relativePath + "/" + file.name)= file.name
+            td.type= file.extension
+            td.size= file.size
