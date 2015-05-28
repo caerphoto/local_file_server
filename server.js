@@ -66,11 +66,20 @@ require("http").createServer(function (req, res) {
     req.addListener("end", function () {
         var urlPath = url.parse(req.url).path;
         var fullPath = path.join(rootDir, urlPath);
+        if (/\?/.test(fullPath)) {
+            fullPath = fullPath.split("?")[0];
+        }
 
         fs.stat(fullPath, function (err, stats) {
             if (err) {
-                console.log(err);
-                return false;
+                if (err.errno === 34) {
+                    console.log("Not found:", fullPath);
+                    res.writeHead(404);
+                } else {
+                    console.log(err);
+                    res.writeHead(500);
+                }
+                return res.end();
             }
 
             if (stats.isDirectory()) {
@@ -103,7 +112,7 @@ require("http").createServer(function (req, res) {
                 });
 
             } else {
-                console.log("Serving file:", fullPath);
+                console.log([new Date(), fullPath].join("\t"));
                 fileServer.serve(req, res, function (err) {
                     if (err) {
                         console.log("Error serving file for:", req.url);
@@ -115,6 +124,6 @@ require("http").createServer(function (req, res) {
             }
         });
     }).resume();
-}).listen(80, "home");
+}).listen(80, "127.0.0.1");
 
 console.log("Listening on 80...");
