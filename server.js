@@ -33,7 +33,7 @@ function getDirectoryContents(dir, callback) {
 
         filenames.forEach(function (filename) {
             var ext;
-            var stat = fs.statSync(path.join(dir, filename));
+            var stat = fs.lstatSync(path.join(dir, filename));
             if (stat.isDirectory()) {
                 dirs.push(filename);
             } else {
@@ -87,12 +87,13 @@ require("http").createServer(function (req, res) {
                 getDirectoryContents(fullPath, function (contents) {
                     var relativePath = urlPath.replace(/(.+)\/$/, "$1");
                     var pathParts = relativePath.slice(1).split("/");
+                    var responseData;
                     var html;
 
                     pathParts = pathParts.map(function (part, index) {
                         return {
                             url: "/" + pathParts.slice(0, index + 1).join("/"),
-                            part: part
+                            part: part.split("?")[0]
                         };
                     });
 
@@ -100,13 +101,25 @@ require("http").createServer(function (req, res) {
                         relativePath = "";
                     }
 
-                    html = render({
-                        cssPath: path.join(__dirname, "style.css"),
+                    relativePath = relativePath.split("?")[0];
+
+                    responseData = {
+                        assetPath: path.join(__dirname, "/public"),
+                        requirePath: path.join(__dirname, "/public/require.js"),
+                        cssPath: path.join(__dirname, "/public/style.css"),
                         relativePath: relativePath,
                         pathParts: pathParts,
                         directories: contents.directories,
                         files: contents.files
-                    });
+                    };
+
+                    if (url.parse(req.url).query === "json") {
+                        res.setHeader("Content-Type", "application/json");
+                        res.end(JSON.stringify(responseData));
+                        return;
+                    }
+
+                    html = render(responseData);
                     res.setHeader("Content-Type", "text/html; charset=utf-8");
                     res.end(html);
                 });
@@ -124,6 +137,6 @@ require("http").createServer(function (req, res) {
             }
         });
     }).resume();
-}).listen(80, "127.0.0.1");
+}).listen(8000, "0.0.0.0");
 
-console.log("Listening on 80...");
+console.log("Listening on 8000...");

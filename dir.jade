@@ -6,20 +6,41 @@ html
   body
     h1 Directory listing for<br>
       a(href="/") root
-      each part in pathParts
-        // 8203 is zero-width space. Without it, the text won't wrap
-        | &thinsp;/&#8203;&thinsp;
-        a(href=part.url)= part.part
+      span#path-parts
+        each part in pathParts
+          // 8203 is zero-width space. Without it, the text won't wrap
+          | &thinsp;/&#8203;&thinsp;
+          a(href=part.url)= part.part
+
+    script#path-template(type="text/template").
+      <% parts.forEach(function (part) { %>&thinsp;/&#8203;&thinsp;<a href="<%= part.url %>"><%= part.part %></a><% }); %>
+
+    script#dirs-template(type="text/template").
+      <% dirs.forEach(function (dir) { %>
+      <tr>
+        <td>
+          <a href="<%= relativePath + '/' + dir %>"> <%= dir %> </a>
+        </td>
+      </tr>
+      <% }); %>
+
+    script#files-template(type="text/template").
+      <% files.forEach(function (f) { %>
+      <tr>
+        <td>
+          <a href="<%= relativePath + '/' + f.name %>"> <%= f.name %> </a>
+        </td>
+        <td><%= f.extension %></td>
+        <td><%= f.size %></td>
+      </tr>
+      <% }); %>
+
 
     table.directories
       thead
         tr
           th Name
       tbody
-        each dir in directories
-          tr
-            td
-              a(href=relativePath + "/" + dir)= dir
 
     table.files
       thead
@@ -28,9 +49,23 @@ html
           th.type Type
           th.size Size
       tbody
-        each file in files
-          tr
-            td.name
-              a(href=relativePath + "/" + file.name)= file.name
-            td.type= file.extension
-            td.size= file.size
+
+    script(src="#{ requirePath }")
+    script.
+      (function () {
+        var dirsData = !{ JSON.stringify(directories) };
+        var filesData = !{ JSON.stringify(files) };
+
+        require.config({
+          baseUrl: "#{ assetPath }",
+          paths: {
+            underscore: "underscore-min",
+            jquery: "http://code.jquery.com/jquery-1.11.3.min",
+            backbone: "backbone-min"
+          }
+        });
+
+        require(['main'], function (init) {
+          init(dirsData, filesData, "#{ relativePath }");
+        });
+      }());
