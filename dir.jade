@@ -7,16 +7,12 @@ html
     h1 Directory listing for<br>
       a(href="/") root
       span#path-parts
-        each part in pathParts
-          // 8203 is zero-width space. Without it, the text won't wrap
-          | &thinsp;/&#8203;&thinsp;
-          a(href=part.url)= part.part
 
     script#path-template(type="text/template").
-      <% parts.forEach(function (part) { %>&thinsp;/&#8203;&thinsp;<a href="<%= part.url %>"><%= part.part %></a><% }); %>
+      <% pathParts.forEach(function (part) { %>&thinsp;/&#8203;&thinsp;<a href="<%= part.url %>"><%= part.part %></a><% }); %>
 
-    script#dirs-template(type="text/template").
-      <% dirs.forEach(function (dir) { %>
+    script#directories-template(type="text/template").
+      <% directories.forEach(function (dir) { %>
       <tr>
         <td>
           <a href="<%= relativePath + '/' + dir %>"> <%= dir %> </a>
@@ -53,8 +49,12 @@ html
     script(src="#{ requirePath }")
     script.
       (function () {
-        var dirsData = !{ JSON.stringify(directories) };
-        var filesData = !{ JSON.stringify(files) };
+        var dirData = {
+          directories: !{ JSON.stringify(directories) },
+          files: !{ JSON.stringify(files) },
+          relativePath: "!{ relativePath }",
+          pathParts: !{ JSON.stringify(pathParts) }
+        };
 
         require.config({
           baseUrl: "#{ assetPath }",
@@ -66,6 +66,6 @@ html
         });
 
         require(['main'], function (init) {
-          init(dirsData, filesData, "#{ relativePath }");
+          init(dirData);
         });
       }());

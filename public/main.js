@@ -1,26 +1,33 @@
 define([
+    'model_dirs',
+    'view_path',
     'view_dirs',
     'view_files'
-], function (DirsView, FilesView) {
+], function (DirsModel, PathView, DirsView, FilesView) {
 
-    function init(dirData, fileData, relativePath) {
-        var filesView = new FilesView({
-            files: fileData,
-            relativePath: relativePath
+    function init(dirData) {
+        var model = new DirsModel({
+            directories: dirData.directories,
+            files: dirData.files,
+            pathParts: dirData.pathParts,
+            relativePath: dirData.relativePath
         });
 
-        var dirsView = new DirsView({
-            dirs: dirData,
-            relativePath: relativePath,
-            filesView: filesView
+        new PathView({
+            model: model
+        });
+
+        new FilesView({
+            model: model
+        });
+
+        new DirsView({
+            model: model
         });
 
         window.onpopstate = function (evt) {
             if (evt.state) {
-                dirsView.model.set('dirs', evt.state.directories);
-                filesView.model.set('files', evt.state.files);
-                dirsView.relativePath = filesView.relativePath =
-                    evt.state.relativePath;
+                model.set(evt.state);
             }
         };
     }
