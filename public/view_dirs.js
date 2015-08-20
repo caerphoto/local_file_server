@@ -4,7 +4,7 @@ define([
     'view_base'
 ], function (_, $, BaseView) {
     var DirsView = BaseView.extend({
-        el: 'table.directories tbody',
+        el: '#directories tbody',
         template: _.template($('#directories-template').html()),
 
         events: {

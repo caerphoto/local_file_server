@@ -6,7 +6,16 @@ html
   body
     h1 Directory listing for<br>
       a(href="/") root
-      span#path-parts
+      span#path
+
+    #directories
+      table
+        thead
+          tr
+            th Name
+        tbody
+
+    #files
 
     script#path-template(type="text/template").
       <% pathParts.forEach(function (part) { %>&thinsp;/&#8203;&thinsp;<a href="<%= part.url %>"><%= part.part %></a><% }); %>
@@ -21,30 +30,26 @@ html
       <% }); %>
 
     script#files-template(type="text/template").
-      <% files.forEach(function (f) { %>
-      <tr>
-        <td>
-          <a href="<%= relativePath + '/' + f.name %>"> <%= f.name %> </a>
-        </td>
-        <td><%= f.extension %></td>
-        <td><%= f.size %></td>
-      </tr>
-      <% }); %>
-
-
-    table.directories
-      thead
-        tr
-          th Name
-      tbody
-
-    table.files
-      thead
-        tr
-          th.name Name
-          th.type Type
-          th.size Size
-      tbody
+      <table>
+        <thead>
+          <tr>
+            <th data-column="name">Name</th>
+            <th data-column="extension">Ext</th>
+            <th data-column="size">Size</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% files.forEach(function (f) { %>
+          <tr>
+            <td>
+              <a href="<%= relativePath + '/' + f.name %>"> <%= f.name %> </a>
+            </td>
+            <td><%= f.extension %></td>
+            <td><%= f.formattedSize %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
 
     script(src="#{ requirePath }")
     script.

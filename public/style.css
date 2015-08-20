@@ -17,23 +17,30 @@ a:hover {
     color: #4ebeff;
 }
 
+#directories,
+#files,
 table {
     box-sizing: border-box;
-    border-collapse: collapse;
 }
 
-table {
+#directories,
+#files {
     float: left;
     margin: 1em 0;
 }
 
-table.directories {
+#directories {
     width: 20%;
 }
 
-table.files {
+#files {
     width: 80%;
     border-left: 1px solid #ddd;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
     border-right: 2px solid transparent;
 }
 
@@ -49,19 +56,19 @@ tr > :last-child {
     padding-right: 1em;
 }
 
-table.directories tr:nth-child(odd) td {
+#directories tr:nth-child(odd) td {
     background: #eff4ff;
 }
 
-table.files tr:nth-child(odd) td {
+#files tr:nth-child(odd) td {
     background-color: #f4f4f4;
 }
 
-table.files tr:hover td:last-child {
+#files tr:hover td:last-child {
     border-right: 2px solid #aaa;
 }
 
-table.directories th,
+#directories th,
 th.name,
 th.type {
     text-align: left;

@@ -4,7 +4,7 @@ define([
     'view_base',
 ], function (_, $, BaseView) {
     var PathView = BaseView.extend({
-        el: '#path-parts',
+        el: '#path',
         template: _.template($('#path-template').html()),
 
         events: {

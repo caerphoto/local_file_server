@@ -41,7 +41,8 @@ function getDirectoryContents(dir, callback) {
                 files.push({
                     "name": filename,
                     extension: ext ? ext[0] : "",
-                    size: formatSize(stat.size),
+                    formattedSize: formatSize(stat.size),
+                    size: stat.size,
                     lastModified: stat.mtime
                 });
             }
