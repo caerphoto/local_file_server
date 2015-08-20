@@ -10,7 +10,6 @@ define([
             this.render();
 
             if (!history.state) {
-                console.log(this.model.attributes);
                 history.replaceState(this.model.attributes, "", window.location);
             }
             this.listenTo(this.model, 'change:' + this.listenAttr, this.render);
