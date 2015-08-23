@@ -71,6 +71,8 @@ require("http").createServer(function (req, res) {
             fullPath = fullPath.split("?")[0];
         }
 
+        fullPath = decodeURIComponent(fullPath).replace(/\s/g, "\ ");
+
         fs.stat(fullPath, function (err, stats) {
             if (err) {
                 if (err.errno === 34) {

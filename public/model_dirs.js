@@ -15,6 +15,7 @@ define([
 
         toggleDirectorySortDirection: function () {
             this.set('sortDirsAscending', !this.get('sortDirsAscending'));
+            // Need to call .reverse() on a copy because reverse is in-place.
             this.set('directories', this.get('directories').slice().reverse);
         },
 

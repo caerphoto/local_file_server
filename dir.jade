@@ -18,7 +18,7 @@ html
     #files
 
     script#path-template(type="text/template").
-      <% pathParts.forEach(function (part) { %>&thinsp;/&#8203;&thinsp;<a href="<%= part.url %>"><%= part.part %></a><% }); %>
+      <% pathParts.forEach(function (part) { %>&thinsp;/&#8203;&thinsp;<a href="<%= part.url %>"><%= decodeURIComponent(part.part) %></a><% }); %>
 
     script#directories-template(type="text/template").
       <% directories.forEach(function (dir) { %>
