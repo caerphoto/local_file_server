@@ -107,9 +107,7 @@ require("http").createServer(function (req, res) {
                     relativePath = relativePath.split("?")[0];
 
                     responseData = {
-                        assetPath: path.join(__dirname, "/public"),
-                        requirePath: path.join(__dirname, "/public/require.js"),
-                        cssPath: path.join(__dirname, "/public/style.css"),
+                        assetPath: path.join(__dirname, "/public/"),
                         relativePath: relativePath,
                         pathParts: pathParts,
                         directories: contents.directories,

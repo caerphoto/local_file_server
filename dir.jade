@@ -2,7 +2,7 @@ doctype html
 html
   head
     title= relativePath || "/"
-    link(href=cssPath, rel="stylesheet")
+    link(href="#{ assetPath + 'style.css' }", rel="stylesheet")
   body
     h1 Directory listing for<br>
       a(href="/") root
@@ -33,25 +33,30 @@ html
       <table>
         <thead>
           <tr>
-            <th data-column="name">Name</th>
-            <th data-column="extension">Ext</th>
-            <th data-column="size">Size</th>
+            <th data-column="name" class="name">Name</th>
+            <th data-column="extension" class="extension">Ext</th>
+            <th data-column="size" class="size">Size</th>
           </tr>
         </thead>
         <tbody>
           <% files.forEach(function (f) { %>
           <tr>
-            <td>
-              <a href="<%= relativePath + '/' + f.name %>"> <%= f.name %> </a>
+            <td class="name">
+              <a href="<%= relativePath + '/' + f.name %>">
+                <% if (/\.(png|jp(e?)g|gif)$/.test(relativePath + '/' + f.name)) { %>
+                  <span class="picture-icon"></span>
+                <% } %>
+                <%= f.name %>
+              </a>
             </td>
-            <td><%= f.extension %></td>
-            <td><%= f.formattedSize %></td>
+            <td class="extension"><%= f.extension %></td>
+            <td class="size"><%= f.formattedSize %></td>
           </tr>
           <% }); %>
         </tbody>
       </table>
 
-    script(src="#{ requirePath }")
+    script(src="#{ assetPath + 'require.js' }")
     script.
       (function () {
         var dirData = {

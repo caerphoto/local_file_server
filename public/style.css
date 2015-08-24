@@ -45,7 +45,11 @@ table {
 }
 
 th, td {
-    padding: 0.5em 0;
+    padding: 0.6em 0;
+}
+
+td {
+    line-height: 1;
 }
 
 tr > :first-child {
@@ -79,6 +83,15 @@ td.size {
     text-align: right;
 }
 
+.picture-icon {
+    background-image: url('picture.svg');
+    background-size: contain;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -2px;
+}
+
 /* QuickSlide popup styles */
 .quickslide-popup-box {
     border-width: 1px;
@@ -90,7 +103,6 @@ td.size {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 
     background-color: #333;
-    background-image: url("loading-spinner.gif");
     background-repeat: no-repeat;
     background-position: center;
 }
