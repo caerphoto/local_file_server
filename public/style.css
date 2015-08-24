@@ -44,6 +44,10 @@ table {
     border-right: 2px solid transparent;
 }
 
+#directories table {
+    table-layout: fixed;
+}
+
 th, td {
     padding: 0.6em 0;
 }
@@ -74,7 +78,7 @@ tr > :last-child {
 
 #directories th,
 th.name,
-th.type {
+th.extension {
     text-align: left;
 }
 
