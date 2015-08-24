@@ -17,6 +17,7 @@ define([
 
         render: function () {
             this.el.innerHTML = this.template(this.model.attributes);
+            document.title = this.model.get('relativePath');
             return this;
         },
 

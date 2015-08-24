@@ -2,8 +2,9 @@ define([
     'model_dirs',
     'view_path',
     'view_dirs',
-    'view_files'
-], function (DirsModel, PathView, DirsView, FilesView) {
+    'view_files',
+    'quickslide-min'
+], function (DirsModel, PathView, DirsView, FilesView, QS) {
 
     function init(dirData) {
         var model = new DirsModel({
@@ -23,6 +24,12 @@ define([
 
         new DirsView({
             model: model
+        });
+
+        QS({
+            auto_detect: true,
+            use_dimmer: true,
+            no_wait: true
         });
 
         window.onpopstate = function (evt) {
