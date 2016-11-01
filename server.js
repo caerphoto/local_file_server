@@ -1,32 +1,40 @@
 //jshint node:true
-var static = require("node-static");
-var rootDir = "/";
-var fileServer = new static.Server(rootDir, { cache: 0 });
-var fs = require("fs");
-var url = require("url");
-var path = require("path");
-var jade = require("jade");
-var render = jade.compile(fs.readFileSync(path.join(__dirname, "dir.jade"),
-    { encoding: "UTF-8"}));
+/*global JSON*/
+var fstatic = require('node-static');
+var rootDir = '/';
+var fileServer = new fstatic.Server(rootDir, { cache: 0 });
+var fs = require('fs');
+var url = require('url');
+var path = require('path');
+var jade = require('jade');
+var render = jade.compile(
+    fs.readFileSync(path.join(__dirname, 'dir.jade'),
+    { encoding: 'UTF-8'})
+);
+
+function logx(number, base) {
+    'use strict';
+    // Returns logarithm of number with given base.
+    return Math.log(number) / Math.log(base);
+}
 
 function formatSize(size) {
+    'use strict';
     var suffixes = [
-        " B",
-        " KB",
-        " MB",
-        " GB"
+        ' B',
+        ' KB',
+        ' MB',
+        ' GB',
+        ' TB'
     ];
-    var i = 0;
+    var magnitude = Math.floor(logx(size, 1024));
 
-    while (size > 1024) {
-        size = size / 1024;
-        i += 1;
-    }
-
-    return size.toPrecision(3) + suffixes[i];
+    return (size / Math.pow(1024, magnitude)).toPrecision(3) +
+        suffixes[magnitude];
 }
 
 function getDirectoryContents(dir, callback) {
+    'use strict';
     fs.readdir(dir, function (err, filenames) {
         var dirs = [];
         var files = [];
@@ -39,8 +47,8 @@ function getDirectoryContents(dir, callback) {
             } else {
                 ext = filename.match(/\..+$/);
                 files.push({
-                    "name": filename,
-                    extension: ext ? ext[0] : "",
+                    'name': filename,
+                    extension: ext ? ext[0] : '',
                     formattedSize: formatSize(stat.size),
                     size: stat.size,
                     lastModified: stat.mtime
@@ -63,20 +71,21 @@ function getDirectoryContents(dir, callback) {
     });
 }
 
-require("http").createServer(function (req, res) {
-    req.addListener("end", function () {
+require('http').createServer(function (req, res) {
+    'use strict';
+    req.addListener('end', function () {
         var urlPath = url.parse(req.url).path;
         var fullPath = path.join(rootDir, urlPath);
         if (/\?/.test(fullPath)) {
-            fullPath = fullPath.split("?")[0];
+            fullPath = fullPath.split('?')[0];
         }
 
-        fullPath = decodeURIComponent(fullPath).replace(/\s/g, "\ ");
+        fullPath = decodeURIComponent(fullPath).replace(/\s/g, '\ ');
 
         fs.stat(fullPath, function (err, stats) {
             if (err) {
-                if (err.errno === 34) {
-                    console.log("Not found:", fullPath);
+                if (err && err.code === 'ENOENT') {
+                    console.log('Not found:', fullPath);
                     res.writeHead(404);
                 } else {
                     console.log(err);
@@ -86,50 +95,50 @@ require("http").createServer(function (req, res) {
             }
 
             if (stats.isDirectory()) {
-                console.log("Serving directory:", fullPath);
+                console.log('Serving directory:', fullPath);
                 getDirectoryContents(fullPath, function (contents) {
-                    var relativePath = urlPath.replace(/(.+)\/$/, "$1");
-                    var pathParts = relativePath.slice(1).split("/");
+                    var relativePath = urlPath.replace(/(.+)\/$/, '$1');
+                    var pathParts = relativePath.slice(1).split('/');
                     var responseData;
                     var html;
 
                     pathParts = pathParts.map(function (part, index) {
                         return {
-                            url: "/" + pathParts.slice(0, index + 1).join("/"),
-                            part: part.split("?")[0]
+                            url: '/' + pathParts.slice(0, index + 1).join('/'),
+                            part: part.split('?')[0]
                         };
                     });
 
-                    if (relativePath === "/") {
-                        relativePath = "";
+                    if (relativePath === '/') {
+                        relativePath = '';
                     }
 
-                    relativePath = relativePath.split("?")[0];
+                    relativePath = relativePath.split('?')[0];
 
                     responseData = {
-                        assetPath: path.join(__dirname, "/public/"),
+                        assetPath: path.join(__dirname, '/public/'),
                         relativePath: relativePath,
                         pathParts: pathParts,
                         directories: contents.directories,
                         files: contents.files
                     };
 
-                    if (url.parse(req.url).query === "json") {
-                        res.setHeader("Content-Type", "application/json");
+                    if (url.parse(req.url).query === 'json') {
+                        res.setHeader('Content-Type', 'application/json');
                         res.end(JSON.stringify(responseData));
                         return;
                     }
 
                     html = render(responseData);
-                    res.setHeader("Content-Type", "text/html; charset=utf-8");
+                    res.setHeader('Content-Type', 'text/html; charset=utf-8');
                     res.end(html);
                 });
 
             } else {
-                console.log([new Date(), fullPath].join("\t"));
+                console.log([new Date(), fullPath].join('\t'));
                 fileServer.serve(req, res, function (err) {
                     if (err) {
-                        console.log("Error serving file for:", req.url);
+                        console.log('Error serving file for:', req.url);
                         res.writeHead(err.status, err.headers);
                     }
                     res.end();
@@ -138,6 +147,6 @@ require("http").createServer(function (req, res) {
             }
         });
     }).resume();
-}).listen(8000, "0.0.0.0");
+}).listen(8000, '0.0.0.0');
 
-console.log("Listening on 8000...");
+console.log('Listening on 8000...');

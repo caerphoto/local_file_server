@@ -3,8 +3,9 @@ define([
     'view_path',
     'view_dirs',
     'view_files',
-    'quickslide-min'
+    'quickslide'
 ], function (DirsModel, PathView, DirsView, FilesView, QS) {
+    'use strict';
 
     function init(dirData) {
         var model = new DirsModel({
@@ -37,6 +38,10 @@ define([
                 model.set(evt.state);
             }
         };
+
+        model.on('directory-changed', function () {
+            QS.rescan();
+        });
     }
 
     return init;

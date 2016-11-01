@@ -51,6 +51,7 @@ define([
                 this.set('files', dirData.files);
                 this.set('pathParts', dirData.pathParts);
 
+                this.trigger('directory-changed');
                 history.pushState(this.attributes, "", url);
             }.bind(this)).fail(function (err) {
                 console.log(err);
